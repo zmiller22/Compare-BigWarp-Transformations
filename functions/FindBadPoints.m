@@ -49,7 +49,7 @@ bad_point_numbers = [find(bad_points)-1, warp_dist(logical(bad_points),:)];
 
 %% Write bad_point_numbers to .csv file (optional)
 if write == 1
-    writetable(landmarks, out_file);
+    writetable(landmarks, out_file, 'WriteVariableNames', false);
 end
 
 end
