@@ -3,17 +3,17 @@ close all;
 
 %% Set paths to files
 
-boundary_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareTransformations\common\LM_points.csv";
-mesh_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareTransformations\common\points.csv";
-nn_mesh_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareTransformations\common\nn_points.csv";
+boundary_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\common\LM_points.csv";
+mesh_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\common\points.csv";
+nn_mesh_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\common\nn_points.csv";
 
-landmarks_1_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareTransformations\transform_1\landmarks_1.csv";
-landmarks_2_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareTransformations\transform_2\landmarks_2.csv";
+landmarks_1_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\landmarks_190712.csv";
+landmarks_2_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_2\combined_190720.csv";
 
-trans_mesh_points_1_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareTransformations\transform_1\points_trans_1.csv";
-trans_mesh_points_2_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareTransformations\transform_2\points_trans_2.csv";
-trans_nn_mesh_points_1_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareTransformations\transform_1\nn_points_trans_1.csv";
-trans_nn_mesh_points_2_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareTransformations\transform_2\nn_points_trans_2.csv";
+trans_mesh_points_1_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\points_trans_1.csv";
+trans_mesh_points_2_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_2\points_trans_2.csv";
+trans_nn_mesh_points_1_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\nn_points_trans_1.csv";
+trans_nn_mesh_points_2_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_2\nn_points_trans_2.csv";
 
 %% Load data from files
 
@@ -139,7 +139,7 @@ hold off;
 
 figure('color', 'w', 'units','inches','position',[9,1,7,5])
 p = histogram(mesh_1_dist_in, 20);
-xlabel('Tranformation one distances from affine to warping transformation', 'fontname', 'arial', 'fontsize',20)
+xlabel('Transformation one distances from affine to warping transformation', 'fontname', 'arial', 'fontsize',20)
 ylabel('Count','fontname','arial','fontsize',12)
 set(gca, 'fontname','arial','fontsize',12, 'xlim', warp_dist_x_lims, 'ylim', warp_dist_y_lims)
 hold on;
