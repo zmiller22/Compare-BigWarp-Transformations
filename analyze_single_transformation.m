@@ -9,7 +9,7 @@ nn_mesh_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarp
 
 landmarks_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\landmarks_190712.csv";
 
-trans_mesh_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\points_trans_1.csv";
+% trans_mesh_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\points_trans_1.csv";
 trans_nn_mesh_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\nn_points_trans_1.csv";
 
 fixed_points_nn_path = "C:\Users\TracingPC1\Desktop\BIGWARP\TRANSFORMS\testing\fixed_points_nn.csv";
@@ -22,13 +22,13 @@ nn_landmark_points_path = "C:\Users\TracingPC1\Desktop\BIGWARP\TRANSFORMS\testin
 mesh_points = readtable(mesh_points_path);
 nn_mesh_points = readtable(nn_mesh_points_path);
 
-trans_mesh_points = readtable(trans_mesh_points_path);
+% trans_mesh_points = readtable(trans_mesh_points_path);
 trans_nn_mesh_points = readtable(trans_nn_mesh_points_path);
 
 % boundary_points = table2array(boundary_points);
 mesh_points = table2array(mesh_points);
 nn_mesh_points = table2array(nn_mesh_points);
-trans_mesh_points = table2array(trans_mesh_points);
+% trans_mesh_points = table2array(trans_mesh_points);
 trans_nn_mesh_points = table2array(trans_nn_mesh_points);
 
 boundary_points = Landmarks2Array(boundary_points_path);
@@ -38,6 +38,11 @@ LM_landmarks = landmarks(:, 1:3);
 EM_landmarks = landmarks(:,4:6);
 boundary_points = boundary_points(:,1:3);
 
+% This loads in the trans_mesh_points without having to run a second
+% transformation in FIJI
+k = 7;
+mesh_idx_list = knnsearch(nn_mesh_points, mesh_points, 'K', k);
+trans_mesh_points = trans_nn_mesh_points(mesh_idx_list(:,1),:);
 
 %% Measure distances from aff_LM_landmarks to EM_landmarks
 
@@ -66,11 +71,10 @@ warp_dist = FindDistances(aff_mesh_points, trans_mesh_points);
 % We don't really care about what the mean is, but what the spread around
 % the mean is. The tighter the spread, the more uniform the warp field.
 
-k = 7;
 LM_to_EM_scale = 1.2745;
 
 % This is just to get the indexes of mesh points in the nn_mesh_points list
-mesh_idx_list = knnsearch(nn_mesh_points, mesh_points, 'K', k);
+% mesh_idx_list = knnsearch(nn_mesh_points, mesh_points, 'K', k);
 
 points_to_measure = trans_nn_mesh_points(mesh_idx_list(:,1),:);
 
@@ -96,9 +100,10 @@ trans_mesh_idx_list_in = trans_mesh_idx_list(logical(in),:);
 
 %% Find bad points
 
+% TODO fix this comment
+
 % This finds points in the landmarks csv that might not coorespond to the
-% same points in LM and EM and writes new landmark files with the
-% bad_points edited out
+% same points in LM and EM and writes new landmark files with the bad_point
 
 [bad_point_idx_list_nn, bad_point_dist_list_nn] = FindBadNNPoints(landmarks_path, trans_mesh_nn_dist_in, trans_mesh_idx_list_in, trans_nn_mesh_points, 1, fixed_points_nn_path);
 [bad_points_idx_list_warp, bad_point_dist_list_warp] = FindBadWarpPoints(landmarks_path, 35, 1, fixed_points_warp_path);

@@ -10,8 +10,8 @@ nn_mesh_points_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarp
 landmarks_1_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\landmarks_190712.csv";
 landmarks_2_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_2\combined_190720.csv";
 
-trans_mesh_points_1_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\points_trans_1.csv";
-trans_mesh_points_2_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_2\points_trans_2.csv";
+% trans_mesh_points_1_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\points_trans_1.csv";
+% trans_mesh_points_2_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_2\points_trans_2.csv";
 trans_nn_mesh_points_1_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_1\nn_points_trans_1.csv";
 trans_nn_mesh_points_2_path = "C:\Users\TracingPC1\Desktop\matlab_scripts\CompareBigWarpTransformations\transform_2\nn_points_trans_2.csv";
 
@@ -21,16 +21,16 @@ boundary_points = readtable(boundary_points_path);
 mesh_points = readtable(mesh_points_path);
 nn_mesh_points = readtable(nn_mesh_points_path);
 
-trans_mesh_points_1 = readtable(trans_mesh_points_1_path);
-trans_mesh_points_2 = readtable(trans_mesh_points_2_path);
+% trans_mesh_points_1 = readtable(trans_mesh_points_1_path);
+% trans_mesh_points_2 = readtable(trans_mesh_points_2_path);
 trans_nn_mesh_points_1 = readtable(trans_nn_mesh_points_1_path);
 trans_nn_mesh_points_2 = readtable(trans_nn_mesh_points_2_path);
 
 boundary_points = table2array(boundary_points);
 mesh_points = table2array(mesh_points);
 nn_mesh_points = table2array(nn_mesh_points);
-trans_mesh_points_1 = table2array(trans_mesh_points_1);
-trans_mesh_points_2 = table2array(trans_mesh_points_2);
+% trans_mesh_points_1 = table2array(trans_mesh_points_1);
+% trans_mesh_points_2 = table2array(trans_mesh_points_2);
 trans_nn_mesh_points_1 = table2array(trans_nn_mesh_points_1);
 trans_nn_mesh_points_2 = table2array(trans_nn_mesh_points_2);
 
@@ -43,6 +43,13 @@ EM_landmarks_1 = landmarks_1(:,4:6);
 LM_landmarks_2 = landmarks_2(:,1:3);
 EM_landmarks_2 = landmarks_2(:,4:6);
 
+% This loads in the trans_mesh_points without having to run a second
+% transformation in FIJI
+k = 7;
+mesh_idx_list = knnsearch(nn_mesh_points, mesh_points, 'K', k);
+
+trans_mesh_points_1 = trans_nn_mesh_points_1(mesh_idx_list(:,1),:);
+trans_mesh_points_2 = trans_nn_mesh_points_2(mesh_idx_list(:,1),:);
 
 %% Measure distances from aff_LM_landmarks to EM_landmarks
 
@@ -76,21 +83,20 @@ mesh_2_dist = FindDistances(aff_mesh_points_2, trans_mesh_points_2);
 % We don't really care about what the mean is, but what the spread around
 % the mean is. The tighter the spread, the more uniform the warp field.
 
-k = 7;
 LM_to_EM_scale = 1.2745;
 
 % This is just to get the indexes of the inner mesh points for later use
-[nn_idx_list, nn_dist_list] = knnsearch(nn_mesh_points, mesh_points, 'K', k);
+mesh_idx_list = knnsearch(nn_mesh_points, mesh_points, 'K', k);
 
-points_to_measure_1 = trans_nn_mesh_points_1(nn_idx_list(:,1),:);
-points_to_measure_2 = trans_nn_mesh_points_2(nn_idx_list(:,1),:);
+points_to_measure_1 = trans_nn_mesh_points_1(mesh_idx_list(:,1),:);
+points_to_measure_2 = trans_nn_mesh_points_2(mesh_idx_list(:,1),:);
 
-[trans_nn_idx_list_1, trans_nn_dist_list_1] = knnsearch(trans_nn_mesh_points_1, points_to_measure_1, 'K', k);
-[trans_nn_idx_list_2, trans_nn_dist_list_2] = knnsearch(trans_nn_mesh_points_2, points_to_measure_2, 'K', k);
+[trans_mesh_idx_list_1, trans_mesh_nn_dist_list_1] = knnsearch(trans_nn_mesh_points_1, points_to_measure_1, 'K', k);
+[trans_mesh_idx_list_2, trans_mesh_nn_dist_list_2] = knnsearch(trans_nn_mesh_points_2, points_to_measure_2, 'K', k);
 
 % find the average nn distance and adjust for scaling from LM to EM
-nn_dist_1 = sum(trans_nn_dist_list_1, 2)/(6*LM_to_EM_scale);
-nn_dist_2 = sum(trans_nn_dist_list_2, 2)/(6*LM_to_EM_scale);
+trans_mesh_nn_dist_list_1 = sum(trans_mesh_nn_dist_list_1, 2)/(6*LM_to_EM_scale);
+trans_mesh_nn_dist_list_2 = sum(trans_mesh_nn_dist_list_2, 2)/(6*LM_to_EM_scale);
 
 %% Find points in the area of the transformation
 
@@ -107,8 +113,8 @@ trans_mesh_points_in_2 = trans_mesh_points_2(logical(in),:);
 mesh_1_dist_in = mesh_1_dist(in);
 mesh_2_dist_in = mesh_2_dist(in);
 
-nn_dist_1_in = nn_dist_1(logical(in),:);
-nn_dist_2_in = nn_dist_2(logical(in),:);
+nn_dist_1_in = trans_mesh_nn_dist_list_1(logical(in),:);
+nn_dist_2_in = trans_mesh_nn_dist_list_2(logical(in),:);
 
 %% Create plots
 
