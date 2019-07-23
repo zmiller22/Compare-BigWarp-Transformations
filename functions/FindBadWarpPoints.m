@@ -1,4 +1,4 @@
-function [bad_point_numbers, warp_dist] = FindBadPoints(in_file, out_file, threshold, write)
+function [bad_point_idx_list, warp_dist_list] = FindBadPoints(in_file, threshold, write, out_file)
 % Find all points where the distance between the affine transformed
 % LM_landmarks and the EM_landmarks is above a certain threshold. in_file
 % should be the landmarks file, out_file is the file you want to write the
@@ -37,15 +37,16 @@ LM_landmark_points = LM_landmark_points';
 aff_LM_landmark_points = aff_LM_landmark_points';
 
 %% Calculate distance from affine transformed points to EM points
-warp_dist = sqrt(sum((aff_LM_landmark_points(:,1:3)-EM_landmark_points(:,1:3)).^2, 2));
+warp_dist_list = sqrt(sum((aff_LM_landmark_points(:,1:3)-EM_landmark_points(:,1:3)).^2, 2));
 
 %% Find all rows with dist greater than some threshold that are not already false
-bad_points = double(warp_dist > threshold);
+bad_points = double(warp_dist_list > threshold);
 bad_points(rows_false,:) = 0;
 
 landmarks{logical(bad_points),2} = {'FALSE'};
 
-bad_point_numbers = [find(bad_points)-1, warp_dist(logical(bad_points),:)];
+% bad_point_numbers = [find(bad_points)-1, warp_dist(logical(bad_points),:)];
+bad_point_idx_list = [find(bad_points), warp_dist_list(logical(bad_points),:)];
 
 %% Write bad_point_numbers to .csv file (optional)
 if write == 1

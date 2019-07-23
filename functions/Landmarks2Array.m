@@ -7,5 +7,10 @@ landmarks = readtable(in_file);
 rows_to_delete = strcmp(landmarks{:,2}, 'FALSE');
 landmarks(rows_to_delete, :) = [];
 landmarks = table2array(landmarks(:,3:8));
+
+if isa(landmarks, 'cell')
+    landmarks = str2double(landmarks);
+end
+
 end
 

@@ -88,7 +88,7 @@ points_to_measure_2 = trans_nn_mesh_points_2(nn_idx_list(:,1),:);
 [trans_nn_idx_list_1, trans_nn_dist_list_1] = knnsearch(trans_nn_mesh_points_1, points_to_measure_1, 'K', k);
 [trans_nn_idx_list_2, trans_nn_dist_list_2] = knnsearch(trans_nn_mesh_points_2, points_to_measure_2, 'K', k);
 
-% find the average nn distance and adust for scaling from LM to EM
+% find the average nn distance and adjust for scaling from LM to EM
 nn_dist_1 = sum(trans_nn_dist_list_1, 2)/(6*LM_to_EM_scale);
 nn_dist_2 = sum(trans_nn_dist_list_2, 2)/(6*LM_to_EM_scale);
 
