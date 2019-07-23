@@ -1,4 +1,4 @@
-function [outputArg1,outputArg2] = GetNNDistances(points_to_test,buffer_point_lattice, nn_idx_list)
+function [outputArg1,outputArg2] = GetNNDistances(points_to_test, buffer_point_lattice, nn_idx_list)
 %UNTITLED13 Summary of this function goes here
 
 % Scaling factors for going from pixels to microns

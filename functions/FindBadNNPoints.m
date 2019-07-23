@@ -10,14 +10,13 @@ function [bad_point_idx_list, bad_point_dist_list] = FindBadNNPoints(landmarks_f
 % write the file (optional), and out_file shoudl be the path to the output
 % file you wish to write to
 
-% TODO delete idxs in bad_point_idx_list that are already false
+% TODO fix bad_point_dist_list as it currently does not match the idx list
 
 %% Read in the data
 landmarks = readtable(landmarks_file);
 EM_points = table2array(landmarks(:, 6:8));
 
-% logical array of points that are already false
-rows_false = strcmp(landmarks{:,2}, 'FALSE');
+
 
 %% Find outliers in nn_mesh_points
 sd = std(nn_dist_list);
@@ -34,7 +33,10 @@ bad_mesh_points = nn_mesh_points(nn_idx_list(bad_idx_logical, 1),:);
 [bad_point_idx_list, bad_point_dist_list] = knnsearch(EM_points, bad_mesh_points);
 bad_point_idx_list = unique(bad_point_idx_list);
 
-landmarks{unique(bad_point_idx_list),2} = {'FALSE'};
+rows_true = strcmp("TRUE", landmarks{bad_point_idx_list, 2});
+bad_point_idx_list = bad_point_idx_list(rows_true);
+
+landmarks{bad_point_idx_list,2} = {'FALSE'};
 
 %% Write bad_point_numbers to .csv file (optional)
 if write == 1
