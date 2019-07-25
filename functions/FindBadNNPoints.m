@@ -1,4 +1,4 @@
-function [bad_point_idx_list, bad_point_dist_list] = FindBadNNPoints(landmarks_file, nn_dist_list, nn_idx_list, nn_mesh_points, write, out_file)
+function [bad_point_idx_list, bad_point_dist_list] = FindBadNNPoints(landmarks_file, nn_dist_list, nn_idx_list, nn_mesh_points, filter_width, write, out_file)
 % Find all points in nn_mesh_points that have an average nearest neighbor
 % metric that is more than 2 standard deviations away from the mean, and
 % then find and set to false the landmark points closest to that
@@ -21,8 +21,8 @@ EM_points = table2array(landmarks(:, 6:8));
 %% Find outliers in nn_mesh_points
 sd = std(nn_dist_list);
 mn = mean(nn_dist_list);
-upper_threshold = mn+2*sd;
-lower_threshold = mn-2*sd;
+upper_threshold = mn+filter_width*sd;
+lower_threshold = mn-filter_width*sd;
 
 % This logical will be used to select the proper idxs in nn_idx_list
 bad_idx_logical = nn_dist_list>upper_threshold | nn_dist_list<lower_threshold;

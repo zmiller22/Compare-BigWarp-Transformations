@@ -105,7 +105,7 @@ trans_mesh_idx_list_in = trans_mesh_idx_list(logical(in),:);
 % This finds points in the landmarks csv that might not coorespond to the
 % same points in LM and EM and writes new landmark files with the bad_point
 
-[bad_point_idx_list_nn, bad_point_dist_list_nn] = FindBadNNPoints(landmarks_path, trans_mesh_nn_dist_in, trans_mesh_idx_list_in, trans_nn_mesh_points, 1, fixed_points_nn_path);
+[bad_point_idx_list_nn, bad_point_dist_list_nn] = FindBadNNPoints(landmarks_path, trans_mesh_nn_dist_in, trans_mesh_idx_list_in, trans_nn_mesh_points, 2, 1, fixed_points_nn_path);
 [bad_points_idx_list_warp, bad_point_dist_list_warp] = FindBadWarpPoints(landmarks_path, 35, 1, fixed_points_warp_path);
 
 % TODO compare the idx_points to create a third output option where it only
